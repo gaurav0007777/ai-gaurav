@@ -10,10 +10,13 @@ import geminiResponse from "./gemini.js"
 
 
 const app=express()
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173"
+// Allow all origins (reflect the request origin) and keep credentials enabled.
+// Using origin: true lets the CORS middleware set the Access-Control-Allow-Origin
+// header to the request's Origin. This is useful when you want to accept requests
+// from any origin but still allow cookies/credentials.
 app.use(cors({
-    origin: CLIENT_URL,
-    credentials:true
+    origin: true,
+    credentials: true
 }))
 const port=process.env.PORT || 5000
 app.use(express.json())
