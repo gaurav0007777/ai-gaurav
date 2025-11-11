@@ -21,12 +21,22 @@ try {
 
     const token=await genToken(user._id)
 
-    res.cookie("token",token,{
-        httpOnly:true,
-       maxAge:7*24*60*60*1000,
-       sameSite:"strict",
-       secure:false
-    })
+    // Set cookie options depending on environment.
+    // In production when backend is served over HTTPS and the frontend is on a different origin,
+    // cookies must be set with SameSite='none' and secure=true to be sent cross-site.
+    const cookieOptions = process.env.NODE_ENV === 'production' ? {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'none',
+        secure: true
+    } : {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'strict',
+        secure: false
+    }
+
+    res.cookie("token", token, cookieOptions)
 
     return res.status(201).json(user)
 
@@ -51,12 +61,20 @@ try {
 
     const token=await genToken(user._id)
 
-    res.cookie("token",token,{
-        httpOnly:true,
-       maxAge:7*24*60*60*1000,
-       sameSite:"strict",
-       secure:false
-    })
+    // Reuse the same cookieOptions logic as above
+    const cookieOptionsLogin = process.env.NODE_ENV === 'production' ? {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'none',
+        secure: true
+    } : {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'strict',
+        secure: false
+    }
+
+    res.cookie("token", token, cookieOptionsLogin)
 
     return res.status(200).json(user)
 
